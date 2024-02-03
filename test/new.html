@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic 3D Box with Three.js</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script>
+      function createDynamicBox(length, topWidth, bottomWidth, thickness) {
+        // Set up scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create a trapezoidal geometry
+        const trapezoidalGeometry = new THREE.BufferGeometry();
+
+        const vertices = new Float32Array([
+          -bottomWidth / 2,
+          -length / 2,
+          -thickness / 2,
+          bottomWidth / 2,
+          -length / 2,
+          -thickness / 2,
+          topWidth / 2,
+          length / 2,
+          thickness / 2,
+          -topWidth / 2,
+          length / 2,
+          thickness / 2,
+        ]);
+
+        trapezoidalGeometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(vertices, 3)
+        );
+
+        const indices = new Uint32Array([0, 1, 2, 0, 2, 3, 1, 0, 3, 1, 3, 2]);
+
+        trapezoidalGeometry.setIndex(new THREE.BufferAttribute(indices, 1));
+
+        // Create a material (you can customize the color)
+        const material = new THREE.MeshBasicMaterial({
+          color: 0x00ff00,
+        });
+
+        // Combine geometry and material to create a mesh (the actual object)
+        const trapezoidalMesh = new THREE.Mesh(trapezoidalGeometry, material);
+
+        // Add the mesh to the scene
+        scene.add(trapezoidalMesh);
+
+        // Set camera position
+        camera.position.z = 5;
+
+        // Render the scene with the camera
+        renderer.render(scene, camera);
+      }
+
+      // Example usage of the function with specified dimensions
+      createDynamicBox(2.5, 1, 4, 1);
+    </script>
+  </body>
+</html>
